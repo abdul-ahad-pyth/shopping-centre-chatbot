@@ -3,60 +3,516 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Denim Hub - Premium Fashion Chatbot</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>DENIM HUB - Chatbot</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Chat container */
+        .chat-container {
+            position: relative;
+            z-index: 1;
+            width: 95%;
+            max-width: 600px;
+            height: 85vh;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Header */
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .header-info {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-info h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .header-info p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #00ff88;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Messages area */
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+        }
+
+        .messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            animation: messageSlide 0.4s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 14px 18px;
+            border-radius: 20px;
+            line-height: 1.5;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.bot .message-content {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .message.user .message-time {
+            text-align: right;
+        }
+
+        /* Typing indicator */
+        .typing {
+            display: none;
+            padding: 14px 18px;
+            background: white;
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            width: fit-content;
+            margin-bottom: 15px;
+        }
+
+        .typing.show {
+            display: block;
+            animation: pulse 1.5s infinite;
+        }
+
+        .typing span {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite;
+        }
+
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        /* Input area */
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-area input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-area button {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-area button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .input-area button:active {
+            transform: translateY(0);
+        }
+
+        .input-area button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Quick suggestions */
+        .quick-suggestions {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            overflow-x: auto;
+        }
+
+        .quick-suggestions::-webkit-scrollbar {
+            height: 5px;
+        }
+
+        .quick-suggestions::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .suggestion {
+            padding: 10px 18px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .suggestion:hover {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Welcome message */
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #667eea;
+        }
+
+        .welcome-message i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        .welcome-message h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .welcome-message p {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+    </style>
 </head>
 <body>
-    <!-- Fashion decorations -->
-    <div class="fashion-decoration">👖</div>
-    <div class="fashion-decoration">👕</div>
-    <div class="fashion-decoration">🧥</div>
-    <div class="fashion-decoration">👗</div>
-    <div class="fashion-decoration">👜</div>
-    <div class="fashion-decoration">👟</div>
+    <div class="particles" id="particles"></div>
 
-    <div class="chatbot-container">
-        <div class="chatbot-header">
-            <div class="header-content">
-                <span class="brand-icon">👖</span>
-                <div>
-                    <h1>Denim Hub</h1>
-                    <p>Premium Denim & Fashion Collection</p>
-                </div>
-                <span class="brand-icon">👕</span>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="logo">DH</div>
+            <div class="header-info">
+                <h1><span class="status-dot"></span>DENIM HUB</h1>
+                <p>Your Premium Clothing Partner</p>
             </div>
         </div>
 
-        <div id="chatbox">
-            <div class="msg-group bot">
-                <div class="bubble">
-                    Welcome to Denim Hub! 👖 Discover our premium denim collection, latest arrivals, and fashion essentials. How can I help you today?
-                </div>
-                <div class="msg-time">Just now</div>
+        <div class="messages" id="messages">
+            <div class="welcome-message" id="welcome">
+                <i class="fas fa-tshirt"></i>
+                <h2>Welcome to DENIM HUB!</h2>
+                <p>Ask me anything about our clothing, location, timing, or products!</p>
+            </div>
+            <div class="typing" id="typing">
+                <span></span><span></span><span></span>
             </div>
         </div>
 
-        <div class="quick-replies">
-            <button class="quick-btn" onclick="quickSend('What are your opening hours?')">🕐 Hours</button>
-            <button class="quick-btn" onclick="quickSend('What is your location?')">📍 Location</button>
-            <button class="quick-btn" onclick="quickSend('What collections do you have?')">👕 Collections</button>
-            <button class="quick-btn" onclick="quickSend('How to order?')">🛒 Order Now</button>
+        <div class="quick-suggestions">
+            <div class="suggestion" onclick="sendSuggestion('What are your opening hours?')">🕐 Opening Hours</div>
+            <div class="suggestion" onclick="sendSuggestion('Where are you located?')">📍 Location</div>
+            <div class="suggestion" onclick="sendSuggestion('What products do you have?')">👕 Products</div>
+            <div class="suggestion" onclick="sendSuggestion('Contact number')">📞 Contact</div>
         </div>
 
-        <div class="chat-input-container">
-            <input 
-                type="text" 
-                id="message" 
-                placeholder="Ask about denim, collections, or fashion..." 
-                autocomplete="off"
-            >
-            <button id="send-btn">
-                <span>Send</span>
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="Ask about our clothing center..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()" id="sendBtn">
+                <i class="fas fa-paper-plane"></i> Send
             </button>
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        // Create particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        const messagesDiv = document.getElementById('messages');
+        const input = document.getElementById('messageInput');
+        const typingDiv = document.getElementById('typing');
+        const welcomeDiv = document.getElementById('welcome');
+        const sendBtn = document.getElementById('sendBtn');
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function sendSuggestion(text) {
+            input.value = text;
+            sendMessage();
+        }
+
+        function getTime() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        async function sendMessage() {
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Hide welcome message
+            if (welcomeDiv) welcomeDiv.style.display = 'none';
+
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+            input.disabled = true;
+            sendBtn.disabled = true;
+
+            // Show typing indicator
+            typingDiv.classList.add('show');
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                
+                // Hide typing indicator
+                typingDiv.classList.remove('show');
+                
+                // Add bot reply
+                addMessage(data.reply, 'bot');
+            } catch (error) {
+                typingDiv.classList.remove('show');
+                addMessage('Sorry, something went wrong. Please try again.', 'bot');
+            }
+
+            input.disabled = false;
+            sendBtn.disabled = false;
+            input.focus();
+        }
+
+        function addMessage(text, type) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${type}`;
+            msgDiv.innerHTML = `
+                <div class="message-content">
+                    ${text}
+                    <div class="message-time">${getTime()}</div>
+                </div>
+            `;
+            messagesDiv.insertBefore(msgDiv, typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    </script>
 </body>
 </html>
