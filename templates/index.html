@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Denim Hub - Premium Fashion Chatbot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Fashion decorations -->
+    <div class="fashion-decoration">👖</div>
+    <div class="fashion-decoration">👕</div>
+    <div class="fashion-decoration">🧥</div>
+    <div class="fashion-decoration">👗</div>
+    <div class="fashion-decoration">👜</div>
+    <div class="fashion-decoration">👟</div>
+
+    <div class="chatbot-container">
+        <div class="chatbot-header">
+            <div class="header-content">
+                <span class="brand-icon">👖</span>
+                <div>
+                    <h1>Denim Hub</h1>
+                    <p>Premium Denim & Fashion Collection</p>
+                </div>
+                <span class="brand-icon">👕</span>
+            </div>
+        </div>
+
+        <div id="chatbox">
+            <div class="msg-group bot">
+                <div class="bubble">
+                    Welcome to Denim Hub! 👖 Discover our premium denim collection, latest arrivals, and fashion essentials. How can I help you today?
+                </div>
+                <div class="msg-time">Just now</div>
+            </div>
+        </div>
+
+        <div class="quick-replies">
+            <button class="quick-btn" onclick="quickSend('What are your opening hours?')">🕐 Hours</button>
+            <button class="quick-btn" onclick="quickSend('What is your location?')">📍 Location</button>
+            <button class="quick-btn" onclick="quickSend('What collections do you have?')">👕 Collections</button>
+            <button class="quick-btn" onclick="quickSend('How to order?')">🛒 Order Now</button>
+        </div>
+
+        <div class="chat-input-container">
+            <input 
+                type="text" 
+                id="message" 
+                placeholder="Ask about denim, collections, or fashion..." 
+                autocomplete="off"
+            >
+            <button id="send-btn">
+                <span>Send</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

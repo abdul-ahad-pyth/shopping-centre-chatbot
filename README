@@ -1,0 +1,27 @@
+# Denim Hub Chatbot
+
+A premium fashion store chatbot powered by Groq AI and Llama 3.3.
+
+## Features
+
+- 🤖 AI-powered customer support
+- 👖 Denim & fashion collection inquiries
+- 🕐 Opening hours & location info
+- 🛍️ Order assistance
+- 💬 Natural language conversations
+
+## Tech Stack
+
+- **Backend**: Python + Flask
+- **AI**: Groq API (Llama 3.3 70B)
+- **Frontend**: HTML + CSS + JavaScript
+- **Hosting**: Render.com
+
+## Setup
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Create `.env` file with your Groq API key:
